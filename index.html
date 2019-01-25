@@ -1,28 +1,123 @@
-<body>
-		<svg>
+<!DOCTYPE html>
+<select>
+		<option selected value=name-ascending>Alphabetical 
+		<option value=value-descending>Frequency, descending 
+		<option value=value-ascending>Frequency, ascending 
+</select>
+<svg width="960" height="500"></svg>
+<style>
+	.bar {
+	  fill: steelblue;
+	}
+	.bar:hover {
+	  fill: brown;
+	}
+</style>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+var data1 = [{Name:"hej",Order:1,Skills:[5,7,9,4],Interest:1},{Name:"ble",Order:2,Skills:[5,1,8,7],Interest:2},{Name:"flu",Order:3,Skills:[8,7,3,9],Interest:5},{Name:"bluuuuu",Order:7,Skills:[2,10,14,24],Interest:2}]
+var svg = d3.select("svg"),
+margin = {
+	top: 20,
+	right: 20,
+	bottom: 30,
+	left: 50
+},
+width = +svg.attr("width") - margin.left - margin.right,
+height = +svg.attr("height") - margin.top - margin.bottom,
+g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+var parseTime = d3.timeParse("%d-%b-%y");
+/*var x = d3.scaleBand()
+	.rangeRound([0, width])
+	.padding(0.1);
+*/
+var	x = d3.scaleBand()
+    .domain(data1.map(d => d.Name))
+    .rangeRound([margin.left, width - margin.right])
+    .padding(0.08)
+var y = d3.scaleLinear()
+	.rangeRound([height, 0]);
+var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
 
-		</svg>
-</body>
-	<script>
-		const margin = 60;
-		const width = 1000 - 2 * margin;
-		const height = 600 - 2 * margin;
-	
-		const svg = d3.select('svg');
-		const chart = svg.append('g')
-	.attr('transform', `translate(${margin}, ${margin})`);
-	const yScale = d3.scaleLinear()
-    .range([height, 0])
-	.domain([0, 90]);
-	chart.append('g')
-	.call(d3.axisLeft(yScale));
-	
-	const xScale = d3.scaleBand()
-    .range([0, width])
-    .domain(sample.map((s) => s.language))
-    .padding(0.2)
 
-chart.append('g')
-    .attr('transform', `translate(0, ${height})`)
-    .call(d3.axisBottom(xScale));
-	</script>
+
+var bluu = function (data) {
+	data.sort(function(a,b){return b.Interest - a.Interest});
+	console.log(data);
+	x.domain(data.map(function (d) {
+			return d.Name;
+		}));
+	y.domain([0,100]);
+
+	g.append("g")
+    .selectAll("g")
+    .data(data)
+	.enter().append("g")
+	.attr("fill", d3.color("blue"))
+    .selectAll("rect")
+    .data(d => {
+		console.log(d,"argggg");
+		var list = [];
+		var nyvar = 0;
+		var count = 0;
+		d.Skills.forEach(e => {
+		var nyobj =	Object.assign(d);
+		console.log(nyobj,"check");
+		nyobj.Skills = e+"";
+		console.log(nyobj,"vluffsdfuuu");
+		nyobj.Y1 = nyvar+""
+		nyobj.folor = count;
+		count ++;
+		list.push(JSON.parse(JSON.stringify(nyobj)));
+		nyvar += Number(nyobj.Skills);
+		});
+		console.log(list, "bluuuuu");
+		return list;
+	})
+	.enter().append("rect")
+	  .attr("fill", d=> ferg[d.folor] )
+      .attr("x", d => x(d.Name))
+	  .attr("y", d =>  y(Number(d.Y1)+Number(d.Skills)))
+	  .attr("height", d => y(0)-y(Number(d.Skills)))
+	  //.attr("bullshit", d.Skills)
+      .attr("width", x.bandwidth());
+
+
+	g.append("g")
+	.attr("transform", "translate(0," + height + ")")
+	.call(d3.axisBottom(x));
+
+	g.append("g")
+	.call(d3.axisLeft(y))
+	.append("text")
+	.attr("fill", "#000")
+	.attr("transform", "rotate(-90)")
+	.attr("y", 6)
+	.attr("dy", "0.71em")
+	.attr("text-anchor", "end")
+	.text("Skill");
+/*
+	g.selectAll(".bar")
+	.data(data)
+	.enter().append("rect")
+	.attr("class", "bar")
+	.attr("x", function (d) {
+		return x(d.Order);
+	})
+	.attr("y", function (d) {
+		return y(Number(d.Skill));
+	})
+	.attr("width", x.bandwidth())
+	.attr("height", function (d) {
+		return height - y(Number(d.Skill));
+	});
+
+
+*/
+	  
+
+}
+
+
+bluu(data1);
+</script>
