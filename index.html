@@ -28,7 +28,7 @@ var parseTime = d3.timeParse("%d-%b-%y");
 	.rangeRound([0, width])
 	.padding(0.1);
 */
-
+var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green"),d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green"),d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
 
 
 var bluu = function (data) {
@@ -39,7 +39,6 @@ var bluu = function (data) {
     .padding(0.08)
 	var y = d3.scaleLinear()
 		.rangeRound([height, 0]);
-	var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
 	
 	console.log(data);
 	x.domain(data.map(function (d) {
@@ -51,7 +50,7 @@ var bluu = function (data) {
     .selectAll("g")
     .data(Skills)
 	.enter().append("g")
-	.attr("fill", d3.color("blue"))
+	.attr("fill", d => farg[Skills.indexOf(d)])
     .selectAll("rect")
     .data(d => {
 		console.log(d,"argggg");
