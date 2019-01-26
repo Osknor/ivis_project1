@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 		<button onclick="sorting()" >hello!</button>
-<svg width="1500" height="500"></svg>
+<svg width="1200" height="500"></svg>
 <style>
-	.bar {
+	.barr {
 	  fill: steelblue;
 	}
 	.bar:hover {
 	  fill: brown;
+	}
+	.cool:hover{
+	fill: steelblue;
 	}
 </style>
 <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -18,7 +21,7 @@ margin = {
 	top: 20,
 	right: 20,
 	bottom: 30,
-	left: 50
+	left: 20
 },
 width = +svg.attr("width") - margin.left - margin.right,
 height = +svg.attr("height") - margin.top - margin.bottom,
@@ -36,11 +39,11 @@ var bluu = function (data) {
 	var	x = d3.scaleBand()
     .domain(data.map(d => d.Name))
     .rangeRound([margin.left, width - margin.right])
-    .padding(0.08)
+    .padding(0.18)
 	var y = d3.scaleLinear()
 		.rangeRound([height, 0]);
 	
-	console.log(data);
+	//console.log(data);
 	x.domain(data.map(function (d) {
 			return d.Name;
 		}));
@@ -48,32 +51,35 @@ var bluu = function (data) {
 
 	g.append("g")
     .selectAll("g")
-    .data(Skills)
+    .data(data)
 	.enter().append("g")
-	.attr("fill", d => {
-		//console.log(Skills.indexOf(d),farg[Skills.indexOf(d)]);
- 		return ferg[Skills.indexOf(d)];
-})
+	.attr("class","cool")
     .selectAll("rect")
     .data(d => {
-		console.log(d,"argggg");
+		//console.log(d,"argggg");
 		outerlist = [];
-		data.forEach(e => {
+		Skills.forEach(e => {
 		var list = [];
-		list.push(d);
 		list.push(e);
+		list.push(d);
 		outerlist.push(JSON.parse(JSON.stringify(list)));
 		});
 		return (outerlist)
 	})
 	.enter().append("rect")
 	  //.attr("fill", d=> ferg[d.folor] )
+       .attr("fill", d => {
+                //console.log(Skills.indexOf(d[0]),farg[Skills.indexOf(d[0])]);
+                return ferg[Skills.indexOf(d[0])];
+})
+
       .attr("x", d => x(d[1].Name))
+	.attr("class","bar")
 	  .attr("y", d =>  {
 		var skill = d[0];
 		var pers = d[1];
 		var value = pers[skill];
-		console.log("wat",skill,pers,value,"bleee");
+		//console.log("wat",skill,pers,value,"bleee");
 		var index = Skills.indexOf(skill);
 		var y1 = 0;
 		for (i = 0; i < index; i++){
@@ -97,7 +103,7 @@ var bluu = function (data) {
 
 	g.append("g")
 	.attr("transform", "translate(0," + height + ")")
-	.call(d3.axisBottom(x));
+	.call(d3.axisBottom(x).tickSizeOuter(0).tickFormat(() => ""));
 
 	g.append("g")
 	.call(d3.axisLeft(y))
@@ -138,7 +144,7 @@ d3.tsv("IVIS19.tsv").then(function(data) {
 
 
 
-
+	rawData.sort(function(a,b){return b.VisSkills - a.VisSkills});
 	bluu(rawData);
 
 
