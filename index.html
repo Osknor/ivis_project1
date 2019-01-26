@@ -11,7 +11,8 @@
 </style>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
-var data1 = [{Name:"hej",Order:1,Skills:[5,7,9,4],Interest:1},{Name:"ble",Order:2,Skills:[5,1,8,7],Interest:2},{Name:"flu",Order:3,Skills:[8,7,3,9],Interest:5},{Name:"bluuuuu",Order:7,Skills:[2,10,14,24],Interest:2}]
+var Skills = ['VisSkills','StatSkills','MathSkills','DrawSkills','UseSkills','ProgSkills','GxSkills','IntSkills','EvSkills','ComSkills','CollabSkills','GitSkills'];
+//var data1 = [{Name:"hej",Order:1,Skills:['Pro','Fal'],Interest:1,Pro:7,Fal:5},{Name:"ble",Order:2,Skills:['Pro','Fal'],Fal:2,Pro:5},{Name:"flu",Order:3,Skills:['Pro','Fal'],Interest:5,Pro:10,Fal:9},{Name:"bluuuuu",Order:7,Skills:['Pro','Fal'],Interest:2,Pro:2,Fal:7}]
 var svg = d3.select("svg"),
 margin = {
 	top: 20,
@@ -35,11 +36,6 @@ var y = d3.scaleLinear()
 	.rangeRound([height, 0]);
 var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
 
-d3.tsv("IVIS19.tsv").then(function(data) {
-	console.log(data, "inte error")
-}).catch(function(error){
-	console.log("error")
-});
 
 var bluu = function (data) {
 	console.log(data);
@@ -50,34 +46,45 @@ var bluu = function (data) {
 
 	g.append("g")
     .selectAll("g")
-    .data(data)
+    .data(Skills)
 	.enter().append("g")
 	.attr("fill", d3.color("blue"))
     .selectAll("rect")
     .data(d => {
 		console.log(d,"argggg");
+		outerlist = [];
+		data.forEach(e => {
 		var list = [];
-		var nyvar = 0;
-		var count = 0;
-		d.Skills.forEach(e => {
-		var nyobj =	Object.assign(d);
-		console.log(nyobj,"check");
-		nyobj.Skills = e+"";
-		console.log(nyobj,"vluffsdfuuu");
-		nyobj.Y1 = nyvar+""
-		nyobj.folor = count;
-		count ++;
-		list.push(JSON.parse(JSON.stringify(nyobj)));
-		nyvar += Number(nyobj.Skills);
+		list.push(d);
+		list.push(e);
+		outerlist.push(JSON.parse(JSON.stringify(list)));
 		});
-		console.log(list, "bluuuuu");
-		return list;
+		return (outerlist)
 	})
 	.enter().append("rect")
-	  .attr("fill", d=> ferg[d.folor] )
-      .attr("x", d => x(d.Name))
-	  .attr("y", d =>  y(Number(d.Y1)+Number(d.Skills)))
-	  .attr("height", d => y(0)-y(Number(d.Skills)))
+	  //.attr("fill", d=> ferg[d.folor] )
+      .attr("x", d => x(d[1].Name))
+	  .attr("y", d =>  {
+		var skill = d[0];
+		var pers = d[1];
+		var value = pers[skill];
+		console.log("wat",skill,pers,value,"bleee");
+		var index = Skills.indexOf(skill);
+		var y1 = 0;
+		for (i = 0; i < index; i++){
+			y1 += pers[Skills[i]];
+		}
+		return (y(Number(y1)+Number(value)));
+		
+	})
+
+	  .attr("height", d =>{ 
+		var skill = d[0];
+		var pers = d[1];
+		var value = pers[skill];
+		return( y(0)-y(Number(value)))
+	
+	})
 	  //.attr("bullshit", d.Skills)
       .attr("width", x.bandwidth());
 
@@ -116,8 +123,27 @@ var bluu = function (data) {
 	  
 
 }
-//data1.sort(function(a,b){return b.Interest - a.Interest});
-//bluu(JSON.parse(JSON.stringify(data1)));
+
+d3.tsv("IVIS19.tsv").then(function(data) {
+	//console.log(data, "inte error")
+	var rawData = data;
+	rawData.pop();
+	console.log(rawData);
+
+	bluu(rawData);
+
+
+
+
+
+
+
+}).catch(function(error){
+	console.log("error")
+});
+
+/*data1.sort(function(a,b){return b.Interest - a.Interest});
+bluu(JSON.parse(JSON.stringify(data1)));*/
 function sorting(){
 	console.log("click!");
 	data1.sort((a, b) => a.Order - b.Order);
