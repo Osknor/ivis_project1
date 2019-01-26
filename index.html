@@ -28,16 +28,19 @@ var parseTime = d3.timeParse("%d-%b-%y");
 	.rangeRound([0, width])
 	.padding(0.1);
 */
-var	x = d3.scaleBand()
-    .domain(data1.map(d => d.Name))
-    .rangeRound([margin.left, width - margin.right])
-    .padding(0.08)
-var y = d3.scaleLinear()
-	.rangeRound([height, 0]);
-var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
+
 
 
 var bluu = function (data) {
+
+	var	x = d3.scaleBand()
+    .domain(data.map(d => d.Name))
+    .rangeRound([margin.left, width - margin.right])
+    .padding(0.08)
+	var y = d3.scaleLinear()
+		.rangeRound([height, 0]);
+	var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
+	
 	console.log(data);
 	x.domain(data.map(function (d) {
 			return d.Name;
@@ -129,6 +132,9 @@ d3.tsv("IVIS19.tsv").then(function(data) {
 	var rawData = data;
 	rawData.pop();
 	console.log(rawData);
+
+
+
 
 	bluu(rawData);
 
