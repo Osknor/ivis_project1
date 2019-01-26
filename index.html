@@ -4,8 +4,15 @@
 		<option value="MathSkills">Mathematical Skills</option>
 		<option value="Name">Harry Potter Names</option>
 		<option value="ComSkills">Computer Usage Skills</option>
-	</select>
-<svg width="1200" height="500"></svg>
+		<option value="Interests">Hobbies & Interests</option>
+	</select><br>
+	<div id="filtret">
+	<input type="checkbox" value="GxSkills" class="filter" name="Graphics" > Graphics
+	<input type="checkbox" value="ProgSkills" class="filter" name="Programming"> Programming
+	<input type="checkbox" value="EvSkills" class="filter" name="Evaluation" > Evaluation
+	</div>
+	<button type="button">Click Me!</button>
+<svg width="1200" height="800"></svg>
 <style>
 	.barr {
 	  fill: steelblue;
@@ -19,7 +26,7 @@
 </style>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
-var Skills = ['VisSkills','StatSkills','MathSkills','DrawSkills','UseSkills','ProgSkills','GxSkills','IntSkills','EvSkills','ComSkills','CollabSkills','GitSkills'];
+var Skills = ['VisSkills','StatSkills','MathSkills','DrawSkills','ProgSkills','GxSkills','IntSkills','EvSkills','ComSkills','CollabSkills','GitSkills'];
 //var data1 = [{Name:"hej",Order:1,Skills:['Pro','Fal'],Interest:1,Pro:7,Fal:5},{Name:"ble",Order:2,Skills:['Pro','Fal'],Fal:2,Pro:5},{Name:"flu",Order:3,Skills:['Pro','Fal'],Interest:5,Pro:10,Fal:9},{Name:"bluuuuu",Order:7,Skills:['Pro','Fal'],Interest:2,Pro:2,Fal:7}]
 var svg = d3.select("svg"),
 margin = {
@@ -68,6 +75,7 @@ var bluu = function (data) {
 
       .attr("x", d => x(d[1].Name))
 	.attr("class","bar")
+	.attr("class", d => d[0])
 	  .attr("y", d =>  {
 		var skill = d[0];
 		var pers = d[1];
@@ -163,7 +171,7 @@ d3.tsv("IVIS19.tsv").then(function(data) {
     return d3.descending(a[selectedValue], b[selectedValue])
   })
   x.domain(data.map(function(d, i) {
-    return d[selectedValue]+ x.bandwidth() / 2;
+    return d[selectedValue];
   }));
   g.selectAll(".bar")
     .transition()
@@ -173,6 +181,79 @@ d3.tsv("IVIS19.tsv").then(function(data) {
       return x(d[1][selectedValue]);
     })
 })
+
+d3.selectAll(".filter").on("change", ()=>{
+	var filter = [];
+	var nySkill = document.getElementById("filtret").children;
+	for (i=0; i<nySkill.length;i++){
+		if(nySkill[i].checked)
+		filter.push(nySkill[i].value);
+	}
+	var newdata = JSON.parse(JSON.stringify(rawData))
+	newdata.forEach(d => {
+		filter.forEach(x => {
+			d[x]= 0+""
+			console.log(d[x])
+		})
+		})
+		//g.selectAll("*").remove();
+		//bluu(newdata);
+	
+
+
+	g.selectAll("g")
+	.transition()
+    .duration(500)
+    .data(newdata)
+    .selectAll("rect")
+    .data(d => {
+		//console.log(d,"argggg");
+		outerlist = [];
+		Skills.forEach(e => {
+		var list = [];
+		list.push(e);
+		list.push(d);
+		outerlist.push(JSON.parse(JSON.stringify(list)));
+		});
+		return (outerlist)
+	})
+       .attr("fill", d => {
+                //console.log(Skills.indexOf(d[0]),farg[Skills.indexOf(d[0])]);
+                return ferg[Skills.indexOf(d[0])];
+})
+	  .attr("y", d =>  {
+		var skill = d[0];
+		var pers = d[1];
+		var value = pers[skill];
+		//console.log("wat",skill,pers,value,"bleee");
+		var index = Skills.indexOf(skill);
+		var y1 = 0;
+		for (i = 0; i < index; i++){
+			y1 += Number(pers[Skills[i]]);
+		}
+		//console.log(y1,d);
+		return (y(Number(y1)+Number(value)));
+		
+	})
+	  .attr("height", d =>{ 
+		var skill = d[0];
+		var pers = d[1];
+		var value = pers[skill];
+		return( y(0)-y(Number(value)))
+	
+	})
+
+
+		console.log(filter);
+	})
+
+
+
+
+
+
+
+
 
 
 
