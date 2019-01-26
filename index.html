@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-		<button onclick="sorting()" >hello!</button>
+	<select id = "selector"> 
+		<option value="Order">Procrastionation</option>
+		<option value="MathSkills">Mathematical Skills</option>
+		<option value="Name">Harry Potter Names</option>
+		<option value="ComSkills">Computer Usage Skills</option>
+	</select>
 <svg width="1200" height="500"></svg>
 <style>
 	.barr {
@@ -33,21 +38,9 @@ var parseTime = d3.timeParse("%d-%b-%y");
 */
 var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green"),d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green"),d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
 
-
+var rawData; 
 var bluu = function (data) {
 
-	var	x = d3.scaleBand()
-    .domain(data.map(d => d.Name))
-    .rangeRound([margin.left, width - margin.right])
-    .padding(0.18)
-	var y = d3.scaleLinear()
-		.rangeRound([height, 0]);
-	
-	//console.log(data);
-	x.domain(data.map(function (d) {
-			return d.Name;
-		}));
-	y.domain([0,100]);
 
 	g.append("g")
     .selectAll("g")
@@ -138,14 +131,51 @@ var bluu = function (data) {
 
 d3.tsv("IVIS19.tsv").then(function(data) {
 	//console.log(data, "inte error")
-	var rawData = data;
+	rawData = data;
 	rawData.pop();
 	console.log(rawData);
 
 
 
 	rawData.sort(function(a,b){return b.VisSkills - a.VisSkills});
+
+
+	x = d3.scaleBand()
+    .domain(data.map(d => d.Name))
+    .rangeRound([margin.left, width - margin.right])
+    .padding(0.18)
+	 y = d3.scaleLinear()
+		.rangeRound([height, 0]);
+	
+	//console.log(data);
+	x.domain(data.map(function (d) {
+			return d.Name;
+		}));
+	y.domain([0,100]);
+
 	bluu(rawData);
+
+	var data = rawData;
+	d3.select("#selector").on("change", function() {
+		//console.log(d, "i have a d right here");
+		var selectedValue = d3.select("#selector").property('value')
+  data.sort(function(a, b) {
+    return d3.descending(a[selectedValue], b[selectedValue])
+  })
+  x.domain(data.map(function(d, i) {
+    return d[selectedValue]+ x.bandwidth() / 2;
+  }));
+  g.selectAll(".bar")
+    .transition()
+    .duration(500)
+    .attr("x", function(d,i) {
+		//console.log(d,d[i],i,d.Order);
+      return x(d[1][selectedValue]);
+    })
+})
+
+
+
 
 
 
@@ -156,6 +186,15 @@ d3.tsv("IVIS19.tsv").then(function(data) {
 }).catch(function(error){
 	console.log(error)
 });
+
+/*d3.select("#byKey").on("click", function() {
+  data.sort((a, b) => (a.Order, b.Order))
+  x.domain(data.map(function(d) {
+    return d.Order;
+  }));
+
+*/
+
 
 /*data1.sort(function(a,b){return b.Interest - a.Interest});
 bluu(JSON.parse(JSON.stringify(data1)));*/
