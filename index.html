@@ -50,7 +50,10 @@ var bluu = function (data) {
     .selectAll("g")
     .data(Skills)
 	.enter().append("g")
-	.attr("fill", d => farg[Skills.indexOf(d)])
+	.attr("fill", d => {
+		//console.log(Skills.indexOf(d),farg[Skills.indexOf(d)]);
+ 		return ferg[Skills.indexOf(d)];
+})
     .selectAll("rect")
     .data(d => {
 		console.log(d,"argggg");
@@ -144,7 +147,7 @@ d3.tsv("IVIS19.tsv").then(function(data) {
 
 
 }).catch(function(error){
-	console.log("error")
+	console.log(error)
 });
 
 /*data1.sort(function(a,b){return b.Interest - a.Interest});
