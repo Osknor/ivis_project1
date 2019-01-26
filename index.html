@@ -35,7 +35,7 @@ var y = d3.scaleLinear()
 	.rangeRound([height, 0]);
 var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
 
-d3.csv("IVIS19.csv").then(function(data) {
+d3.tsv("IVIS19.tsv").then(function(data) {
 	console.log(data, "inte error")
 }).catch(function(error){
 	console.log("error")
