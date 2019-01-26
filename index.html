@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<select>
-		<option selected value=name-ascending>Alphabetical 
-		<option value=value-descending>Frequency, descending 
-		<option value=value-ascending>Frequency, ascending 
-</select>
+		<button onclick="sorting()" >hello!</button>
 <svg width="960" height="500"></svg>
 <style>
 	.bar {
@@ -39,10 +35,13 @@ var y = d3.scaleLinear()
 	.rangeRound([height, 0]);
 var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
 
-
+d3.tsv("morley.tsv").then(function(data) {
+	console.log(data, "inte error")
+}).catch(function(error){
+	console.log("error")
+});
 
 var bluu = function (data) {
-	data.sort(function(a,b){return b.Interest - a.Interest});
 	console.log(data);
 	x.domain(data.map(function (d) {
 			return d.Name;
@@ -117,7 +116,13 @@ var bluu = function (data) {
 	  
 
 }
-
-
-bluu(data1);
+//data1.sort(function(a,b){return b.Interest - a.Interest});
+//bluu(JSON.parse(JSON.stringify(data1)));
+function sorting(){
+	console.log("click!");
+	data1.sort((a, b) => a.Order - b.Order);
+	console.log(data1);
+	g.selectAll("*").remove();
+	bluu(JSON.parse(JSON.stringify(data1)));
+}
 </script>
