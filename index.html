@@ -3,7 +3,7 @@
 		<option value="MathSkills">Mathematical Skills</option>
 		<option value="Order">Procrastionation</option>
 		<option value="GxSkills">Computer Graphics</option>
-		<option value="ComSkills">Computer Usage Skills</option>
+		<option value="ComSkills">Communication Skills</option>
 		<option value="Interest">Hobbies & Interests</option>
 		<option value="ProgSkills">Programming</option>
 		<option value="EvSkills">Evaluation</option>
@@ -52,6 +52,7 @@
 </style>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
+var Fancy = ['Information Visualization Skills','Statistical Skills','Mathematical Skills','Drawing and Artistic Skills','Programming Skills','Computer Graphics Programming Skills','Human-computer Interaction Programming Skills','User Experience Evaluation Skills','Communication Skills','Collaboration Skills','Code Repository Skills'];
 var Skills = ['VisSkills','StatSkills','MathSkills','DrawSkills','ProgSkills','GxSkills','IntSkills','EvSkills','ComSkills','CollabSkills','GitSkills'];
 //var data1 = [{Name:"hej",Order:1,Skills:['Pro','Fal'],Interest:1,Pro:7,Fal:5},{Name:"ble",Order:2,Skills:['Pro','Fal'],Fal:2,Pro:5},{Name:"flu",Order:3,Skills:['Pro','Fal'],Interest:5,Pro:10,Fal:9},{Name:"bluuuuu",Order:7,Skills:['Pro','Fal'],Interest:2,Pro:2,Fal:7}]
 var svg = d3.select("svg"),
@@ -129,7 +130,19 @@ var bluu = function (data,kind) {
 			.style("left", d3.event.pageX - 50 + "px")
 			.style("top", d3.event.pageY - 70 + "px")
 			.style("display", "inline-block")
-			.html((d[1].Name) + "<br>" + "" + d[0] );
+			.html(()=>{
+				if (kind == "single"){
+				return ((d[1].Name) + "<br>" + "" + Fancy[Skills.indexOf(d[0])] +" : "+ d[1][d[0]] );
+				}
+				else{
+					var theNames = "";
+				d[1].allNames.forEach(f => {
+					theNames += " "+f+","
+				}) 
+				//console.log(theNames)
+				return theNames +"<br>" + "" + Fancy[Skills.indexOf(d[0])] +" : "+ d[1][d[0]] ;
+				}
+			})
         })
     		.on("mouseout", function(d){ tooltip.style("display", "none");})
       .attr("x", d => x(d[1].Name))
@@ -370,42 +383,31 @@ d3.selectAll(".filter").on("change", ()=>{
 	 //data.sort((a, b) => (b[selectedValue] - a[selectedValue]))
 	 console.log(data,"hello!")
 	 }
-	var groupdata = [];
+	//var groupdata = [];
+	var groups = [{Name:"Group 1",Total:0,allNames:[]},{Name:"Group 2",Total:0,allNames:[]},{Name:"Group 3",Total:0,allNames:[]},{Name:"Group 4",Total:0,allNames:[]},{Name:"Group 5",Total:0,allNames:[]},{Name:"Group 6",Total:0,allNames:[]},{Name:"Group 7",Total:0,allNames:[]},{Name:"Group 8",Total:0,allNames:[]},{Name:"Group 9",Total:0,allNames:[]},{Name:"Group 10",Total:0,allNames:[]}]
+	groups.forEach(d =>{
+		 Skills.forEach(k => {
+			 d[k] = 0;
+		 })
+	 })
 	for(i = 0; i<5;i++){
-		var group = {}
-		//check = [];
+			for(j = 0; j<5;j++){
 		Skills.forEach( d=> {
-			group[d] = Number(data[i*5][d]);
-			//namn[data[i*5].Name] = 1;
-			//check.push( [Number(data[i*5][d]),d])
-			for(j = 1; j<5;j++){
-				//if (d == "VisSkills") console.log(data[(i*5)+j][d],[d]);
-				group[d] += parseInt(data[(i*5)+j][d])
-				//namn[data[(i*5)+j].Name]++;
-				//console.log(group[d])
-				//check.push( [group[d],Number(data[(i*5)][d]),d,data[(i*5)+j].Name])
-			}
-			//group[d] = (group[d]);
-			//check.push(group[d])
+			groups[i][d] += parseInt(data[(i*5)+j][d])
+			})
+		groups[i].allNames.push(data.Name);
+		}
+	}
+	for(i = 0; i<5;i++){
+			for(j = 0; j<6;j++){
+		Skills.forEach( d=> {
+			groups[i+5][d] += parseInt(data[(i*6)+j+25][d])
+			})
+		groups[i].allNames.push(data.Name);
+		}
+	}
 
-		});
-	//console.log(check,"ble",i+j)
-	group.Name = "Group "+(i+1)
-	groupdata.push(JSON.parse(JSON.stringify(group)))
-	}
-	for(i = 0; i<5;i++){
-		group = {}
-		Skills.forEach( d=> {
-			group[d] = Number(data[(i*6)+25][d]);
-			for(j = 1; j<6;j++){
-				group[d] += Number(data[(i*6)+j+25][d])
-			}
-			//group[d] = (group[d]/5);
-		});
-	group.Name = "Group "+((i+6));
-	groupdata.push(JSON.parse(JSON.stringify(group)))
-	}
-	return groupdata;
+	return groups;
  }
  groupdata = makingGroups(data);
 	console.log(groupdata)
@@ -576,22 +578,7 @@ groupdata = makingShed(data);
 	console.error(error)
 });
 
-/*d3.select("#byKey").on("click", function() {
-  data.sort((a, b) => (a.Order, b.Order))
-  x.domain(data.map(function(d) {
-    return d.Order;
-  }));
-
-*/
 
 
-/*data1.sort(function(a,b){return b.Interest - a.Interest});
-bluu(JSON.parse(JSON.stringify(data1)));*/
-function sorting(){
-	console.log("click!");
-	data1.sort((a, b) => a.Order - b.Order);
-	console.log(data1);
-	g.selectAll("*").remove();
-	bluu(JSON.parse(JSON.stringify(data1)));
-}
+
 </script>
