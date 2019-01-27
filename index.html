@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-	<select id = "selector"> 
+<head>
+</head>
+	<select id = "selector" style="margin:5px"> 
 		<option value="MathSkills">Mathematical Skills</option>
-		<option value="Order">Procrastionation</option>
+		<option value="Order">Reverse Procrastionation</option>
 		<option value="GxSkills">Computer Graphics</option>
 		<option value="ComSkills">Communication Skills</option>
 		<option value="Interest">Hobbies & Interests</option>
@@ -12,25 +14,49 @@
 		<option value="MathSkills">Mathematics</option>
 		<option value="DrawSkills">Art and Drawing</option>
 		<option value="Brevity">Brevity</option>
+		<option value="IntSkills">Human-computer Interaction</option>
+		<option value="CollabSkills">Collaberation Skills</option>
+		<option value="GitSkills">Code Repository Skills</option>
+		<option value="UseSkills">Computer Usage Skills</option>
+
 		
-	</select><br>
-	<div id="filtret">
-	<input type="checkbox" value="GxSkills" class="filter" name="Graphics" checked> Computer Graphics
-	<input type="checkbox" value="ProgSkills" class="filter" name="Programming"checked> Programming
-	<input type="checkbox" value="EvSkills" class="filter" name="Evaluation" checked> Evaluation
-	<input type="checkbox" value="VisSkills" class="filter" name="Visualization" checked> Visualization
-	<input type="checkbox" value="StatSkills" class="filter" name="Statitics"checked> Statistics
-	<input type="checkbox" value="MathSkills" class="filter" name="Mathematics" checked> Mathematics
-	<input type="checkbox" value="DrawSkills" class="filter" name="Art and Drawing" checked>Art and Drawing
-	<input type="checkbox" value="IntSkills" class="filter" name="Programming"checked> Human-computer Interaction
-	<input type="checkbox" value="ComSkills" class="filter" name="Evaluation" checked> Communication
-	<input type="checkbox" value="CollabSkills" class="filter" name="Programming"checked> Collaberation
-	<input type="checkbox" value="GitSkills" class="filter" name="Evaluation" checked> Code Repository
-	<input type="checkbox" value="UseSkills" class="filter" name="Usage" checked> Computer Usage
+	</select> <input type="checkbox" value="shhed" class="shed" name="shedding"> Sheduling (If there are groups the program will after sorting try to balance the groups on all Skills)
+	<br>
+	<div id="filtret"> 
+		<input type="checkbox" value="GxSkills" class="filter" name="Graphics" style="margin-left:5px;outline:5px; outline-color:aqua" checked > Computer Graphics
+		<input type="checkbox" value="ProgSkills" class="filter" name="Programming"checked> Programming
+		<input type="checkbox" value="EvSkills" class="filter" name="Evaluation" checked> Evaluation
+		<input type="checkbox" value="VisSkills" class="filter" name="Visualization" checked> Visualization
+		<input type="checkbox" value="StatSkills" class="filter" name="Statitics"checked> Statistics
+		<input type="checkbox" value="MathSkills" class="filter" name="Mathematics" checked> Mathematics
+		<input type="checkbox" value="DrawSkills" class="filter" name="Art and Drawing" checked>Art and Drawing
+		<input type="checkbox" value="IntSkills" class="filter" name="Programming"checked> Human-computer Interaction
+		<input type="checkbox" value="ComSkills" class="filter" name="Evaluation" checked> Communication
+		<input type="checkbox" value="CollabSkills" class="filter" name="Programming"checked> Collaberation
+		<input type="checkbox" value="GitSkills" class="filter" name="Evaluation" checked> Code Repository
+		<input type="checkbox" value="UseSkills" class="filter" name="Usage" checked> Computer Usage
 	</div>
 	<button type="button" id= "People">People</button>
 	<button type="button" id = "Groups">Groups</button>
-<svg width="1200" height="800"></svg>
+<svg width="1300" height="750"></svg>
+<select id = "selector2" style="margin:5px"> 
+		<option value="Group 1">Group 1</option>
+		<option value="Group 2">Group 2</option>
+		<option value="Group 3">Group 3</option>
+		<option value="Group 4">Group 4</option>
+		<option value="Group 5">Group 5</option>
+		<option value="Group 6">Group 6</option>
+		<option value="Group 7">Group 7</option>
+		<option value="Group 8">Group 8</option>
+		<option value="Group 9">Group 9</option>
+		<option value="Group 10">Group 10</option>
+
+
+		
+	</select>
+<button type="button" id = "Show">Show Group</button>
+<div><p id ="Infobox"> Hello!</p></div>
+
 <style>
 	.barr {
 	  fill: steelblue;
@@ -46,7 +72,7 @@
   display: none;
   min-width: 80px;
   height: auto;
-  background: none repeat scroll 0 0 #ffc9c9;
+  background: repeat scroll 0 0 #9affb8;
   padding: 12px;
   text-align: center;
   opacity: 0.9
@@ -54,6 +80,7 @@
 </style>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
+solo = false;
 var Fancy = ['Information Visualization Skills','Statistical Skills','Mathematical Skills','Drawing and Artistic Skills','Computer Usage Skills','Programming Skills','Computer Graphics Programming Skills','Human-computer Interaction Programming Skills','User Experience Evaluation Skills','Communication Skills','Collaboration Skills','Code Repository Skills'];
 var Skills = ['VisSkills','StatSkills','MathSkills','DrawSkills','UseSkills','ProgSkills','GxSkills','IntSkills','EvSkills','ComSkills','CollabSkills','GitSkills'];
 //var data1 = [{Name:"hej",Order:1,Skills:['Pro','Fal'],Interest:1,Pro:7,Fal:5},{Name:"ble",Order:2,Skills:['Pro','Fal'],Fal:2,Pro:5},{Name:"flu",Order:3,Skills:['Pro','Fal'],Interest:5,Pro:10,Fal:9},{Name:"bluuuuu",Order:7,Skills:['Pro','Fal'],Interest:2,Pro:2,Fal:7}]
@@ -68,14 +95,11 @@ width = +svg.attr("width") - margin.left - margin.right,
 height = +svg.attr("height") - margin.top - margin.bottom,
 g = svg.append("g").attr("transform", "translate(" + margin.left  + "," + margin.top + ")");
 var parseTime = d3.timeParse("%d-%b-%y");
-/*var x = d3.scaleBand()
-	.rangeRound([0, width])
-	.padding(0.1);
-*/
-var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green"),d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green"),d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
+var ferg = [d3.color("#6ed3cf"),d3.color("#9068be"),d3.color("#3a4660"),d3.color("#c9af98"),d3.color("#ed8a63"),d3.color("#845007"),d3.color(" #feda6a"),d3.color("#393f4d"),d3.color("#1d1e22"),d3.color("#7dce94"),d3.color("#3d3d3f"),d3.color("#bd8c7d")]
 
 var rawData; 
 var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+var infoBox = d3.select("#Infobox")
 y = d3.scaleLinear()
 		.rangeRound([height, 0]);
 
@@ -87,7 +111,7 @@ var bluu = function (data,kind) {
 	x = d3.scaleBand()
     //.domain(data.map(d => d.Name))
     .rangeRound([margin.left, width+20 - margin.right])
-    .padding(0.28)
+    .padding(0.18)
 
 	//if (kind == "single"){
 		y.domain([0,90]);
@@ -133,8 +157,17 @@ var bluu = function (data,kind) {
 			.style("top", d3.event.pageY - 70 + "px")
 			.style("display", "inline-block")
 			.html(()=>{
-				if (kind == "single"){
+				if (kind == "single" || kind =="solo"){
 				return ((d[1].Name) + "<br>" + "" + Fancy[Skills.indexOf(d[0])] +" : "+ d[1][d[0]] );
+				}
+				else{
+				return d[1].Name +"<br>" + "" + Fancy[Skills.indexOf(d[0])] +" : "+ parseInt(d[1][d[0]]*5) ;
+				}
+			})
+		infoBox
+		.html(()=>{
+			if (kind == "single" || kind =="solo"){
+				return ((d[1].Name) + "<br> Degree:" + d[1].Degree + "<br> Hobbies : "+ d[1].Hobbies );
 				}
 				else{
 					var theNames = "";
@@ -144,7 +177,7 @@ var bluu = function (data,kind) {
 				//console.log(theNames)
 				return theNames +"<br>" + "" + Fancy[Skills.indexOf(d[0])] +" : "+ parseInt(d[1][d[0]]*5) ;
 				}
-			})
+		})
         })
     		.on("mouseout", function(d){ tooltip.style("display", "none");})
       .attr("x", d => x(d[1].Name))
@@ -179,7 +212,9 @@ var bluu = function (data,kind) {
 	g.append("g")
 	.attr("transform", "translate(0," + height + ")")
 	.call(d3.axisBottom(x).tickSizeOuter(0).tickFormat((d,k) => {
-		if (k == 0){ return "Largest - Smallest Value";}
+		if (kind == "solo"){ return d}
+		else if (kind === "groupings"){ return d}
+		else if (k == 28){ return "Largest ---------------- Smallest Value";}
 		else{
 		return ""
 		}
@@ -244,18 +279,16 @@ d3.tsv("IVIS19.tsv").then(function(data) {
 
 // change sorting that's X 
 	d3.select("#selector").on("change", function() {
-		//console.log(d, "i have a d right here");
 		var selectedValue = d3.select("#selector").property('value')
   data.sort((a, b) => (b[selectedValue] - a[selectedValue]))
-  var newgroups = makingGroups(data,selectedValue);
+  if (d3.select(".shed").property("checked")){
+	var newgroups = makingShed(data);
+  }
+  else{
+	var newgroups = makingGroups(data,selectedValue);
+  }
   groupdata = newgroups;
-		var total = 0;
-  newgroups.forEach(d =>{
-	  Skills.forEach(h =>{
-		total +=  Number(d[h])
-	  })
-  })
-  console.log(total,"mekk")
+
   x.domain(data.map(function(d, i) {
     return d.Name;
   }));
@@ -264,16 +297,41 @@ d3.tsv("IVIS19.tsv").then(function(data) {
     .transition()
     .duration(500)
     .attr("x", function(d,i) {
-		//console.log(d,d[i],i,d.Order);
       return x(d[1].Name);
     })
+
+if (solo){
+	sing.sort((a, b) => (b[selectedValue] - a[selectedValue]))
+	x.domain(sing.map(function(d, i) {
+    return d.Name;
+  }));
+  g.selectAll(".solo")
+  .selectAll("rect")
+    .transition()
+    .duration(500)
+    .attr("x", function(d,i) {
+      return x(d[1].Name);
+    })
+
+}
+
+
 	g.selectAll(".groupings")
-	.selectAll("rect")
-	.on("mousemove", function(d){
+		.selectAll("rect")
+		.on("mousemove", function(d){
 		tooltip
 			.style("left", d3.event.pageX - 50 + "px")
 			.style("top", d3.event.pageY - 70 + "px")
 			.style("display", "inline-block")
+			.html(()=>{
+				newgroups.forEach(k =>{
+				if (k.Name == d[1].Name){
+					theNames ="";
+				d[1] = k;
+			}})
+			return d[1].Name +"<br>" + "" + Fancy[Skills.indexOf(d[0])] +" : "+ parseInt(d[1][d[0]]*5) ;
+		})
+		infoBox
 			.html(()=>{
 				newgroups.forEach(k =>{
 				if (k.Name == d[1].Name){
@@ -284,7 +342,7 @@ d3.tsv("IVIS19.tsv").then(function(data) {
 				})
 			}})
 			return theNames +"<br>" + "" + Fancy[Skills.indexOf(d[0])] +" : "+ parseInt(d[1][d[0]]*5) ;
-        })
+		})
 	}) 
 	.transition()
     .duration(500)
@@ -324,10 +382,6 @@ d3.tsv("IVIS19.tsv").then(function(data) {
 
 
 // change filter! that's Y
-/*d3.selectAll("#filtret").selectAll("input").data(Skills).enter().append("input")
-.attr("type","checkbox")
-.attr("checked",true)
-.attr("value", d=> d)*/
 d3.selectAll(".filter").on("change", ()=>{
 	var filter = [];
 	var nySkill = document.getElementById("filtret").children;
@@ -337,10 +391,9 @@ d3.selectAll(".filter").on("change", ()=>{
 	}
 	newfilter(data,filter,".single");
 	newfilter(groupdata,filter,".groupings");
+	if (solo){ newfilter(sing,filter,".solo");
+	}
 	})
-
-
-
 
 
 	function newfilter(data,filter,kind) {
@@ -442,7 +495,7 @@ d3.selectAll(".filter").on("change", ()=>{
  }
  groupdata = makingGroups(data);
 	console.log(groupdata,"fleee")
-//	bluu(groupdata,"groupings");
+	bluu(groupdata,"groupings");
 
 
 
@@ -478,16 +531,17 @@ d3.selectAll(".filter").on("change", ()=>{
 		})
 		Min.allNames.push(d.Name)
 	 })
-	 console.log(groups);
 	 return groups
  }
-groupdata = makingShed(data);
-	bluu(groupdata,"groupings");
+//groupdata = makingShed(data);
+//	bluu(groupdata,"groupings");
 
 
 g.selectAll(".groupings").style("display","none")
 
 d3.select("#People").on("click", ()=> {
+	solo = false;
+	g.selectAll(".solo").remove();
 	g.selectAll(".groupings").style("display","none")
 	//bluu(data)
 	g.selectAll(".single").style("display","initial")
@@ -495,11 +549,38 @@ d3.select("#People").on("click", ()=> {
 });
 
 d3.select("#Groups").on("click", ()=> {
+	solo = false;
+	g.selectAll(".solo").remove();
 	g.selectAll(".single").style("display","none")
 	g.selectAll(".groupings").style("display","initial")
-	y.domain[0]
 });
 
+d3.select("#Show").on("click", ()=> {
+	solo = true;
+	g.selectAll(".solo").remove();
+	g.selectAll(".single").style("display","none")
+	g.selectAll(".groupings").style("display","none")
+	var theGroup = d3.select("#selector2").property('value');
+	//console.log(groupdata,"hed")
+	groupdata.forEach(d=>{
+		if(theGroup == d.Name){
+			console.log("PLINGS!")
+		}
+	})
+	for(i=0;i<5;i++){
+		sing.push(data[i])
+	}
+	
+	bluu (sing,"solo")
+	var filter = [];
+	var nySkill = document.getElementById("filtret").children;
+	for (i=0; i<nySkill.length;i++){
+		if(!nySkill[i].checked)
+		filter.push(nySkill[i].value);
+
+	}
+	newfilter(sing,filter,".solo");
+});
 
 
 
