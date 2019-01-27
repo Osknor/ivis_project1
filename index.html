@@ -105,14 +105,6 @@ var bluu = function (data,kind) {
     .data(data, d => d.Name)
 	.enter().append("g")
 	.attr("class",d => d.Name)
-	.on("mousemove", function(d){
-            tooltip
-              .style("left", d3.event.pageX - 50 + "px")
-              .style("top", d3.event.pageY - 70 + "px")
-              .style("display", "inline-block")
-              .html((d.Name) + "<br>" + "" + (Number(d.MathSkills)));
-        })
-    		.on("mouseout", function(d){ tooltip.style("display", "none");})
     .selectAll("rect")
     .data(d => {
 		//console.log(data,d,"argggg");
@@ -131,8 +123,15 @@ var bluu = function (data,kind) {
 	  //.attr("fill", d=> ferg[d.folor] )
        .attr("fill", d => {
                 //console.log(Skills.indexOf(d[0]),farg[Skills.indexOf(d[0])]);
-                return ferg[Skills.indexOf(d[0])];
-})
+                return ferg[Skills.indexOf(d[0])];})
+		.on("mousemove", function(d){
+		tooltip
+			.style("left", d3.event.pageX - 50 + "px")
+			.style("top", d3.event.pageY - 70 + "px")
+			.style("display", "inline-block")
+			.html((d[1].Name) + "<br>" + "" + d[0] );
+        })
+    		.on("mouseout", function(d){ tooltip.style("display", "none");})
       .attr("x", d => x(d[1].Name))
 	.attr("class","bar")
 	.attr("class", d => d[0])
@@ -226,8 +225,16 @@ d3.tsv("IVIS19.tsv").then(function(data) {
 	d3.select("#selector").on("change", function() {
 		//console.log(d, "i have a d right here");
 		var selectedValue = d3.select("#selector").property('value')
-  data.sort((a, b) => (a[selectedValue] - b[selectedValue]))
+  data.sort((a, b) => (b[selectedValue] - a[selectedValue]))
   var newgroups = makingGroups(data,selectedValue);
+  groupdata = newgroups;
+		var total = 0;
+  newgroups.forEach(d =>{
+	  Skills.forEach(h =>{
+		total +=  Number(d[h])
+	  })
+  })
+  console.log(total,"mekk")
   x.domain(data.map(function(d, i) {
     return d.Name;
   }));
@@ -356,23 +363,25 @@ d3.selectAll(".filter").on("change", ()=>{
 
 
  function makingGroups(data,selectedValue){
-	 selectedValue = "VisSkills"
+	 //selectedValue = "VisSkills"
+	 //var namn = {};
 	 if (selectedValue !== undefined){
 	 //console.log(data);
 	 //data.sort((a, b) => (b[selectedValue] - a[selectedValue]))
 	 console.log(data,"hello!")
 	 }
 	var groupdata = [];
-	for(i = 0; i<5;i=i++){
+	for(i = 0; i<5;i++){
 		var group = {}
 		//check = [];
 		Skills.forEach( d=> {
 			group[d] = Number(data[i*5][d]);
+			//namn[data[i*5].Name] = 1;
 			//check.push( [Number(data[i*5][d]),d])
 			for(j = 1; j<5;j++){
-				if (d == "VisSkills") console.log(data[(i*5)+j][d],[d]);
-				//console.log(group[d],data[(i*5)+j][d],Number(group[d])+Number(data[(i*5)+j][d]))
+				//if (d == "VisSkills") console.log(data[(i*5)+j][d],[d]);
 				group[d] += parseInt(data[(i*5)+j][d])
+				//namn[data[(i*5)+j].Name]++;
 				//console.log(group[d])
 				//check.push( [group[d],Number(data[(i*5)][d]),d,data[(i*5)+j].Name])
 			}
@@ -380,16 +389,16 @@ d3.selectAll(".filter").on("change", ()=>{
 			//check.push(group[d])
 
 		});
-	console.log(check,"ble",i+j)
+	//console.log(check,"ble",i+j)
 	group.Name = "Group "+(i+1)
 	groupdata.push(JSON.parse(JSON.stringify(group)))
 	}
-	for(i = 0; i<6;i++){
+	for(i = 0; i<5;i++){
 		group = {}
 		Skills.forEach( d=> {
-			group[d] = Number(data[(i*6)][d]);
+			group[d] = Number(data[(i*6)+25][d]);
 			for(j = 1; j<6;j++){
-				group[d] += Number(data[(i*6)+j][d])
+				group[d] += Number(data[(i*6)+j+25][d])
 			}
 			//group[d] = (group[d]/5);
 		});
@@ -400,7 +409,51 @@ d3.selectAll(".filter").on("change", ()=>{
  }
  groupdata = makingGroups(data);
 	console.log(groupdata)
+//	bluu(groupdata,"groupings");
+
+
+
+
+
+
+	function makingShed(data,selectedValue){
+		var checkers = Skills;
+	 if (selectedValue !== undefined){
+		checkers = [selectedValue]
+	 }
+	 var groups = [{Name:"Group 1",Total:0,allNames:[]},{Name:"Group 2",Total:0,allNames:[]},{Name:"Group 3",Total:0,allNames:[]},{Name:"Group 4",Total:0,allNames:[]},{Name:"Group 5",Total:0,allNames:[]},{Name:"Group 6",Total:0,allNames:[]},{Name:"Group 7",Total:0,allNames:[]},{Name:"Group 8",Total:0,allNames:[]},{Name:"Group 9",Total:0,allNames:[]},{Name:"Group 10",Total:0,allNames:[]}]
+	 groups.forEach(d =>{
+		 Skills.forEach(k => {
+			 d[k] = 0;
+		 })
+	 })
+	 console.log(groups)
+	 data.forEach(d => {
+		Min = groups[0];
+		groups.forEach(e =>{
+			//console.log(e.total,Min.total,e,Min,"walll")
+			if (e.Total < Min.Total){
+				Min = e;
+			}
+		})
+		// Min is lowest total group
+		checkers.forEach(tut => {
+			Min.Total += Number(d[tut]);
+		})
+		Skills.forEach(varje => {
+			Min[varje] += Number(d[varje]);
+		})
+		Min.allNames.push(d.Name)
+	 })
+	 console.log(groups);
+	 return groups
+ }
+groupdata = makingShed(data);
 	bluu(groupdata,"groupings");
+
+
+
+	//g.selectAll(".groupings").style("display","none")
 
 
 
