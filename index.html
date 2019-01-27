@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 	<select id = "selector"> 
-		<option value="Order">Procrastionation</option>
 		<option value="MathSkills">Mathematical Skills</option>
-		<option value="Name">Harry Potter Names</option>
+		<option value="Order">Procrastionation</option>
+		<option value="GxSkills">Computer Graphics</option>
 		<option value="ComSkills">Computer Usage Skills</option>
-		<option value="Interests">Hobbies & Interests</option>
+		<option value="Interest">Hobbies & Interests</option>
+		<option value="ProgSkills">Programming</option>
+		<option value="EvSkills">Evaluation</option>
+		<option value="VisSkills">Visualization</option>
+		<option value="StatSkills">Statistics</option>
+		<option value="MathSkills">Mathematics</option>
+		<option value="DrawSkills">Art and Drawing</option>
+		
 	</select><br>
 	<div id="filtret">
-	<input type="checkbox" value="GxSkills" class="filter" name="Graphics" > Graphics
-	<input type="checkbox" value="ProgSkills" class="filter" name="Programming"> Programming
-	<input type="checkbox" value="EvSkills" class="filter" name="Evaluation" > Evaluation
+	<input type="checkbox" value="GxSkills" class="filter" name="Graphics" checked> Computer Graphics
+	<input type="checkbox" value="ProgSkills" class="filter" name="Programming"checked> Programming
+	<input type="checkbox" value="EvSkills" class="filter" name="Evaluation" checked> Evaluation
+	<input type="checkbox" value="VisSkills" class="filter" name="Visualization" checked> Visualization
+	<input type="checkbox" value="StatSkills" class="filter" name="Statitics"checked> Statistics
+	<input type="checkbox" value="MathSkills" class="filter" name="Mathematics" checked> Mathematics
+	<input type="checkbox" value="DrawSkills" class="filter" name="Art and Drawing" checked>Art and Drawing
+	<input type="checkbox" value="IntSkills" class="filter" name="Programming"checked> Human-computer Interaction
+	<input type="checkbox" value="ComSkills" class="filter" name="Evaluation" checked> Communication
+	<input type="checkbox" value="CollabSkills" class="filter" name="Programming"checked> Collaberation
+	<input type="checkbox" value="GitSkills" class="filter" name="Evaluation" checked> Code Repository
 	</div>
 	<button type="button">Click Me!</button>
 <svg width="1200" height="800"></svg>
@@ -23,6 +38,16 @@
 	.cool:hover{
 	fill: steelblue;
 	}
+	.toolTip {
+  position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  border: 1px solid #6F257F;
+  padding: 14px;
+  text-align: center;
+}
 </style>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
@@ -37,7 +62,7 @@ margin = {
 },
 width = +svg.attr("width") - margin.left - margin.right,
 height = +svg.attr("height") - margin.top - margin.bottom,
-g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+g = svg.append("g").attr("transform", "translate(" + margin.left  + "," + margin.top + ")");
 var parseTime = d3.timeParse("%d-%b-%y");
 /*var x = d3.scaleBand()
 	.rangeRound([0, width])
@@ -46,17 +71,29 @@ var parseTime = d3.timeParse("%d-%b-%y");
 var ferg = [d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green"),d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green"),d3.color("blue"),d3.color("red"),d3.color("yellow"),d3.color("green")]
 
 var rawData; 
+var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+
+
+
+
+
 var bluu = function (data) {
-
-
 	g.append("g")
     .selectAll("g")
-    .data(data)
+    .data(data, d => d.Name)
 	.enter().append("g")
-	.attr("class","cool")
+	.attr("class",d => d.Name)
+	.on("mousemove", function(d){
+            tooltip
+              .style("left", d3.event.pageX - 50 + "px")
+              .style("top", d3.event.pageY - 70 + "px")
+              .style("display", "inline-block")
+              .html((d.Name) + "<br>" + "" + (Number(d.MathSkills)));
+        })
+    		.on("mouseout", function(d){ tooltip.style("display", "none");})
     .selectAll("rect")
     .data(d => {
-		//console.log(d,"argggg");
+		//console.log(data,d,"argggg");
 		outerlist = [];
 		Skills.forEach(e => {
 		var list = [];
@@ -65,7 +102,9 @@ var bluu = function (data) {
 		outerlist.push(JSON.parse(JSON.stringify(list)));
 		});
 		return (outerlist)
-	})
+	}, d => {
+		return d[0]
+	} )
 	.enter().append("rect")
 	  //.attr("fill", d=> ferg[d.folor] )
        .attr("fill", d => {
@@ -159,26 +198,28 @@ d3.tsv("IVIS19.tsv").then(function(data) {
 	x.domain(data.map(function (d) {
 			return d.Name;
 		}));
-	y.domain([0,100]);
+	y.domain([0,90]);
 
 	bluu(rawData);
+
+
+
 
 	var data = rawData;
 	d3.select("#selector").on("change", function() {
 		//console.log(d, "i have a d right here");
 		var selectedValue = d3.select("#selector").property('value')
-  data.sort(function(a, b) {
-    return d3.descending(a[selectedValue], b[selectedValue])
-  })
+  data.sort((a, b) => (a[selectedValue] - b[selectedValue])
+  )
   x.domain(data.map(function(d, i) {
-    return d[selectedValue];
+    return d.Name;
   }));
-  g.selectAll(".bar")
+  g.selectAll("rect")
     .transition()
     .duration(500)
     .attr("x", function(d,i) {
 		//console.log(d,d[i],i,d.Order);
-      return x(d[1][selectedValue]);
+      return x(d[1].Name);
     })
 })
 
@@ -186,50 +227,47 @@ d3.selectAll(".filter").on("change", ()=>{
 	var filter = [];
 	var nySkill = document.getElementById("filtret").children;
 	for (i=0; i<nySkill.length;i++){
-		if(nySkill[i].checked)
+		if(!nySkill[i].checked)
 		filter.push(nySkill[i].value);
 	}
-	var newdata = JSON.parse(JSON.stringify(rawData))
+	var newdata = JSON.parse(JSON.stringify(data))
+
 	newdata.forEach(d => {
 		filter.forEach(x => {
 			d[x]= 0+""
-			console.log(d[x])
+			//console.log(d,x)
 		})
 		})
 		//g.selectAll("*").remove();
 		//bluu(newdata);
 	
 
+	//console.log(newdata);
 
-	g.selectAll("g")
+	g.selectAll("rect")   
 	.transition()
     .duration(500)
-    .data(newdata)
-    .selectAll("rect")
-    .data(d => {
-		//console.log(d,"argggg");
-		outerlist = [];
-		Skills.forEach(e => {
-		var list = [];
-		list.push(e);
-		list.push(d);
-		outerlist.push(JSON.parse(JSON.stringify(list)));
-		});
-		return (outerlist)
-	})
-       .attr("fill", d => {
-                //console.log(Skills.indexOf(d[0]),farg[Skills.indexOf(d[0])]);
-                return ferg[Skills.indexOf(d[0])];
-})
 	  .attr("y", d =>  {
 		var skill = d[0];
 		var pers = d[1];
+		newdata.forEach(k =>{
+			if (k.Name == d[1].Name){
+				pers = k;
+			//console.log(k,d[1]);
+			}
+		});
+		//console.log(pers,"mehe")
+		//console.log(d[1],pers,skill,"uga uga")
 		var value = pers[skill];
 		//console.log("wat",skill,pers,value,"bleee");
 		var index = Skills.indexOf(skill);
 		var y1 = 0;
 		for (i = 0; i < index; i++){
 			y1 += Number(pers[Skills[i]]);
+		}
+		if (value == 0){
+			console.log(value,y1,y(Number(y1)+Number(value)),y(0)-y(Number(value)),skill,pers)
+			return(0);
 		}
 		//console.log(y1,d);
 		return (y(Number(y1)+Number(value)));
@@ -238,13 +276,23 @@ d3.selectAll(".filter").on("change", ()=>{
 	  .attr("height", d =>{ 
 		var skill = d[0];
 		var pers = d[1];
+		newdata.forEach(k =>{
+			if (k.Name == d[1].Name){
+				pers = k;
+			//console.log(k,d[1]);
+			}
+		});
 		var value = pers[skill];
-		return( y(0)-y(Number(value)))
+		if (value == 0){
+			console.log("wasssss")
+			return 0;
+		} 
+		return(y(0)-y(Number(value)))
 	
 	})
+	//y.domain([0, (filter.length-2)*10])
 
-
-		console.log(filter);
+		//console.log(filter);
 	})
 
 
@@ -265,7 +313,7 @@ d3.selectAll(".filter").on("change", ()=>{
 
 
 }).catch(function(error){
-	console.log(error)
+	console.error(error)
 });
 
 /*d3.select("#byKey").on("click", function() {
