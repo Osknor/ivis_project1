@@ -80,7 +80,7 @@ width = +svg.attr("width") - margin.left - margin.right,
 height = +svg.attr("height") - margin.top - margin.bottom,
 g = svg.append("g").attr("transform", "translate(" + margin.left  + "," + margin.top + ")");
 var parseTime = d3.timeParse("%d-%b-%y");
-var ferg = [d3.color("#6ed3cf"),d3.color("#9068be").brighter(1),d3.color("#3a4660").brighter(2),d3.color("#c9af98"),d3.color("#ed8a63").brighter(1),d3.color("#845007").brighter(2),d3.color(" #feda6a"),d3.color("#393f4d").brighter(2),d3.color("#1d1e22").brighter(4),d3.color("#7dce94"),d3.color("#3d3d3f").brighter(2),d3.color("#bd8c7d")]
+var ferg = [d3.color("#6ed3cf"),d3.color("#9068be").brighter(1),d3.color("#3a4660").brighter(2),d3.color("#c9af98"),d3.color("#ed8a63").brighter(1),d3.color("#845007").brighter(2),d3.color(" #feda6a"),d3.color("#393f4d").brighter(3),d3.color("#FF69B4").brighter(1),d3.color("#7dce94"),d3.color("#3d3d3f").brighter(2),d3.color("#bd8c7d")]
 
 d3.selectAll("#filtret").selectAll('div').data(ferg).enter().append('div').html((d,i)=> {return Fancy[i]}).style("background-color",d=> d).style("float","left").append("input").attr("value",(d,i)=>{return Skills[i];}).attr("type","checkbox").attr("class","filter").property("checked",true);
 var rawData; 
